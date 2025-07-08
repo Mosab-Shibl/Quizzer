@@ -32,6 +32,7 @@ void delete_question (int in_num, int q_num);
 void delete_quiz (int in_num, int q_num);
 void add_question (string quiz, int q_num);
 void edit_quiz (string quiz, int in_num, int q_num);
+void change_name (string quiz, int in_num);
 
 int main() {
     cout << "\t\t\t== Welcome to Quizzer ==\n";
@@ -270,6 +271,7 @@ string find_quiz(int in_num) {
 }
 
 int find_questions(int in_num) {
+
     ifstream in("Data/Quizzes.txt");
     string line;
     int target_line = (in_num * 2) - 1;
@@ -315,6 +317,7 @@ void edit_quiz (string quiz, int in_num, int q_num) {
     cout << "What do you want to do with " << quiz << "? \n";
     cout << "1. Add a question.\n";
     cout << "2. delete a question.\n";
+    cout << "3. Rename " << quiz <<".\n";
 
     cout << "Enter your choice: ";
     char choice;
@@ -330,8 +333,13 @@ void edit_quiz (string quiz, int in_num, int q_num) {
         q_num--;
     }
 
+    else if (choice == '3') {
+        change_name (quiz, in_num);
+
+    }
+
     else {
-        cout << "You have to choose between 1, and 2.\n";
+        cout << "You have to choose between 1, 2, and 3.\n";
         edit_quiz (quiz, in_num, q_num);
     }
 
@@ -339,7 +347,9 @@ void edit_quiz (string quiz, int in_num, int q_num) {
 
     do {
         cout << "1. Show Available quizzes.\n";
-        cout << "2. Start " << quiz << " after your edit.\n";
+
+        if (choice == '3') { cout << "2. Start " << find_quiz(in_num) <<".\n"; }
+        else { cout << "2. Start " << quiz << " after your edit.\n"; }
         cout << "Enter your choice: ";
         cin >> ch;
 
@@ -414,6 +424,7 @@ void delete_question(int in_num, int q_num) {
 }
 
 void add_question(string quiz, int q_num) {
+
     ofstream out("Data/" + quiz + ".txt", ios::app);
     string q;
     string a[4];
@@ -482,6 +493,7 @@ void add_question(string quiz, int q_num) {
 
 
 void delete_quiz(int in_num, int q_num) {
+
     string q = find_quiz(in_num);
     string quiz = "Data/" + q + ".txt";
     remove(quiz.c_str());
@@ -506,4 +518,50 @@ void delete_quiz(int in_num, int q_num) {
     rename("Data/temp.txt", "Data/Quizzes.txt");
 
     cout << "\t\t\t = " << q << " deleted successfully = \n";
+}
+
+void change_name (string quiz, int in_num) {
+
+    string name;
+    cout << "Enter new name: ";
+    cin >> name;
+
+    string q = "Data/" + quiz + ".txt";
+    string n = "Data/" + name + ".txt";
+    rename(q.c_str(), n.c_str());
+
+    ifstream in("Data/Quizzes.txt");
+    ofstream out("Data/temp.txt");
+
+    int target_line = (in_num * 2) -1;
+    int first_part = target_line -1;
+    int total = quizzes_num()*2;
+    int rest = total - (first_part + 2);
+    string line;
+
+    while (first_part --) {
+
+    getline(in, line);
+    out << line << endl;
+
+    }
+
+    out << name << endl;
+    getline(in, line);
+    getline(in, line);
+    out << line << endl;
+
+    while (rest --) {
+
+    getline(in, line);
+    out << line << endl;
+
+    }
+
+    in.close();
+    out.close();
+
+    remove("Data/Quizzes.txt");
+    rename("Data/temp.txt", "Data/Quizzes.txt");
+
 }
