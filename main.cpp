@@ -8,13 +8,16 @@ class Quiz {
 private:
     string name;
     int num;
+    int pass_percnetage;
 
 public:
     void set_name(string n) { name = n; }
     void set_num(int n) { num = n; }
+    void set_percentage(int n) { pass_percnetage = n; }
 
     string get_name() { return name; }
     int get_num() { return num; }
+    int get_percentage() { return pass_percnetage; }
 };
 
 void create_quiz();
@@ -23,16 +26,17 @@ void show_quizzes();
 int quizzes_num();
 bool check_file();
 void input_questions(string name, int num);
-void start_quiz(string name, int q_num);
+void start_quiz(string name, int q_num, int pass_percentage);
 string find_quiz(int in_num);
 int find_questions(int in_num);
 bool get_n_check(char r);
-void score(int q_num, int correct);
+void score(int q_num, int correct, int pass_percentage, string name);
 void delete_question (int in_num, int q_num);
 void delete_quiz (int in_num, int q_num);
 void add_question (string quiz, int q_num);
 void edit_quiz (string quiz, int in_num, int q_num);
 void change_name (string quiz, int in_num);
+void check_pass (float result, int pass_percentage, string name, int q_num);
 
 int main() {
     cout << "\t\t\t== Welcome to Quizzer ==\n";
@@ -48,13 +52,31 @@ int main() {
 }
 
 void create_quiz() {
+
     Quiz Q1;
     string name;
     int num;
+    int pass;
 
     cout << "Enter your quiz name: ";
     cin >> name;
     Q1.set_name(name);
+
+    do {
+
+    cout << "Enter the required percentage to pass: ";
+
+     if (!(cin >> pass)) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "You can only add a number.\n";
+    }
+
+    else if (pass > 100 || pass < 0) { cout << "Required percentage to pass has to be between 0 and 100.\n"; }
+
+    else { Q1.set_percentage(pass); break; }
+
+    } while (true);
 
     do {
         cout << "Enter the number of questions: ";
@@ -141,7 +163,7 @@ void show_quizzes() {
         cin >> choice;
 
         if (choice == '1')
-            start_quiz(quiz, q_num);
+            start_quiz(quiz, q_num, 50);
 
         else if (choice == '2')
             edit_quiz(quiz, in_num, q_num);
@@ -225,11 +247,13 @@ void input_questions(string name, int q_num) {
     out.close();
 }
 
-void start_quiz(string name, int q_num) {
+void start_quiz(string name, int q_num, int pass_percentage) {
+
     int correct = 0;
     ifstream in("Data/" + name + ".txt");
 
     for (int i = 0; i < q_num; i++) {
+
         string question;
         getline(in, question);
         cout << (i + 1) << ". " << question << endl;
@@ -254,7 +278,8 @@ void start_quiz(string name, int q_num) {
     }
 
     in.close();
-    score(q_num, correct);
+    score(q_num, correct, pass_percentage, name);
+
 }
 
 string find_quiz(int in_num) {
@@ -292,13 +317,16 @@ bool get_n_check(char r) {
     return (choice == r);
 }
 
-void score(int q_num, int correct) {
+void score(int q_num, int correct, int pass_percentage, string name) {
+
     cout << "Do you want to view your score? (y/n): ";
     char choice;
     cin >> choice;
 
+    float percentage = ((float)correct / q_num) * 100;
+
     if (choice == 'y' || choice == 'Y') {
-        cout << "\t== Your score: " << correct << " / " << q_num << " ==\n";
+        cout << "\t\t= Your score: " << correct << " / " << q_num << " = " " = " << percentage << "% =\n";
     }
 
     else {
@@ -309,6 +337,8 @@ void score(int q_num, int correct) {
         if (ch == 'y' || ch == 'Y')
             exit(0);
     }
+
+    check_pass(percentage, pass_percentage, name, q_num);
 }
 
 
@@ -355,7 +385,7 @@ void edit_quiz (string quiz, int in_num, int q_num) {
 
         if (ch == '1') { show_quizzes(); }
 
-        else if (ch == '2') { start_quiz(quiz, q_num); }
+        else if (ch == '2') { start_quiz(quiz, q_num, 50); }
 
         else {
             cout << "You have to choose between 1, and 2.\n";
@@ -565,3 +595,36 @@ void change_name (string quiz, int in_num) {
     rename("Data/temp.txt", "Data/Quizzes.txt");
 
 }
+
+void check_pass (float result, int pass_percentage, string name, int q_num) {
+
+    if (result >= pass_percentage) {
+
+        cout << "\t\t == Congratulation! You have passed ==\n";
+        cout << "Do you want to start a new quiz? (y/n)";
+
+        char ch;
+        cin >> ch;
+
+        if (ch == 'Y' || ch == 'y')
+            show_quizzes();
+
+        else
+            exit(0);
+    }
+    else {
+
+        cout << " \t\t == Unfortunately you have Failed! ==\n";
+        cout << "\t\t == the required percentage to pass is: " << pass_percentage << " ==\n";
+        cout << "Do you want to try again? (y/n)";
+        char choice;
+        cin >> choice;
+
+        if (choice == 'Y' || choice == 'y')
+            start_quiz(name, q_num, pass_percentage);
+
+        else
+            options_menu();
+    }
+}
+

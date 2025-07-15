@@ -1,51 +1,30 @@
-# Quizzer – C++ Quiz Management System
+# Quizzer
 
-**Quizzer** is a complete quiz management system built in C++ that allows users to create, edit, and take multiple-choice quizzes through a text-based interface. It uses file handling to store quizzes and implements robust input validation to ensure smooth user interaction.
-
----
+Quizzer is a C++ console-based application that allows users to create, manage, and take multiple-choice quizzes.
 
 ## Features
 
-- Create and save new quizzes  
-- Input multiple-choice questions with four options and a correct answer  
-- Store quiz data in structured text files  
-- View and select from existing quizzes  
-- Start a quiz and receive score feedback  
-- Edit quizzes by:
-  - Adding questions  
-  - Deleting questions  
-  - Renaming existing quizzes  
-- Delete entire quizzes  
-- Input validation to handle incorrect or unexpected user input
+- Create a new quiz by entering a quiz name, number of questions, and required pass percentage.
+- Add questions with 4 choices and set the correct answer.
+- Take quizzes with real-time feedback (correct/wrong).
+- View score and percentage after completing a quiz.
+- Check whether the user passed or failed based on the required pass percentage.
+- Edit existing quizzes (add/delete questions, rename quiz).
+- Delete quizzes completely.
+- Input validation to handle incorrect data types.
 
----
+## Files Used
 
-## Sample Data
+- `Data/Quizzes.txt`: Stores quiz metadata (name, number of questions).
+- `Data/<quiz_name>.txt`: Stores the actual quiz questions and answers.
 
-This repository includes a `sample` folder with example data files.
+## How to Use
 
-To use the sample data:
+1. Run the program.
+2. Choose to create a new quiz or show available quizzes.
+3. Follow prompts to input questions, take quizzes, and view results.
 
-1. Copy the `.txt` files from the `sample` folder  
-2. Paste them into the `Data/` directory of your project  
-3. Replace the existing `Quizzes.txt` file if prompted
+## Author
 
-This allows you to explore the program using pre-defined quizzes.
-
----
-
-## Requirements
-
-- A C++11 or later compatible compiler (e.g., `g++`)  
-- A terminal or console to run the compiled application  
-- A `Data/` directory in the root of the project to store all quiz files
-
----
-
-## Notes
-
-- Ensure the `Data` folder exists before running the program  
-- All quizzes and questions are stored in plain text for simplicity and portability  
-- Quizzes can be renamed through the edit menu without affecting their content  
-- It is recommended to back up `Quizzes.txt` before making significant changes or replacing it with sample data
+Mosab Shibl
 
